@@ -316,7 +316,7 @@ function shouldIncludeField(field, includeFields, includeEphemeral = false) {
 }
 
 function handleString(field, includeFields, index = null, trackerValue = null, extraFields = null, charIndex = null, includeEphemeral = false) {
-	if (trackerValue !== null && typeof trackerValue === "string") {
+	if (trackerValue !== null && typeof trackerValue === "string" && trackerValue !== "") {
 		return trackerValue;
 	} else if (trackerValue !== null) {
 		// Type mismatch
