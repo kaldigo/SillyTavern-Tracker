@@ -160,7 +160,7 @@ export function updateTracker(tracker, updatedTrackerInput, backendObject, inclu
  * @returns {boolean} - `true` if the tracker has at least one non-default field, otherwise `false`.
  */
 export function trackerExists(trackerInput, backendObject) {
-	if(typeof trackerInput === "undefined" || trackerInput === null) return false;
+	if (typeof trackerInput === "undefined" || trackerInput === null) return false;
 
 	// Convert YAML string to JSON if necessary
 	let tracker = typeof trackerInput === "string" ? yamlToJSON(trackerInput) : trackerInput;
@@ -201,10 +201,10 @@ export function cleanTracker(trackerInput, backendObject, outputFormat = OUTPUT_
 	let cleaned = removeDefaults(tracker, defaultTracker, preserveStructure);
 
 	// If the entire tracker was removed, return empty object or {} so we don't break usage
-	if (typeof cleaned === "undefined"){
-		if(outputFormat === OUTPUT_FORMATS.YAML){
+	if (typeof cleaned === "undefined") {
+		if (outputFormat === OUTPUT_FORMATS.YAML) {
 			return "";
-		} else if(outputFormat === OUTPUT_FORMATS.JSON){
+		} else if (outputFormat === OUTPUT_FORMATS.JSON) {
 			return {};
 		}
 	}
@@ -279,8 +279,20 @@ function reconcileUpdatedTracker(tracker, updatedTracker, backendObj, finalTrack
 		const trackerValue = tracker[fieldName];
 		const updatedValue = updatedTracker[fieldName];
 
+		let merged;
+		if (updatedValue === undefined) {
+			// No update for this field -> keep old
+			merged = trackerValue;
+		} else if (_.isPlainObject(trackerValue) && _.isPlainObject(updatedValue)) {
+			// Both are objects -> merge
+			merged = _.merge({}, trackerValue, updatedValue);
+		} else {
+			// Non-object or user explicitly changed it -> take the new value
+			merged = updatedValue;
+		}
+
 		debug("Reconciling field:", { fieldName, fieldPath, trackerValue, updatedValue });
-		finalTracker[fieldName] = handler(field, FIELD_INCLUDE_OPTIONS.ALL, null, updatedValue !== undefined ? updatedValue : trackerValue, extraFields);
+		finalTracker[fieldName] = handler(field, FIELD_INCLUDE_OPTIONS.ALL, null, merged, extraFields);
 	}
 
 	if (includeUnmatchedFields) {
