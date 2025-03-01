@@ -132,11 +132,8 @@ export function getTrackerPrompt(backendObject, includeFields = FIELD_INCLUDE_OP
  */
 export function updateTracker(tracker, updatedTrackerInput, backendObject, includeUnmatchedFields = true, outputFormat = OUTPUT_FORMATS.JSON, useUpdatedExtraFieldsAsSource = false) {
 	debug("Updating tracker:", { tracker, updatedTrackerInput, backendObject, includeUnmatchedFields, outputFormat });
-	tracker = typeof tracker === "string" ? yamlToJSON(tracker) : tracker;
-	const updatedTracker = typeof updatedTrackerInput === "string" ? yamlToJSON(updatedTrackerInput) : updatedTrackerInput;
-
-	tracker = cleanTracker(tracker, backendObject, OUTPUT_FORMATS.JSON, true); // Remove empty fields and clean up structure
-	updatedTracker = cleanTracker(updatedTracker, backendObject, OUTPUT_FORMATS.JSON, true); // Remove empty fields and clean up structure
+	tracker = cleanTracker(typeof tracker === "string" ? yamlToJSON(tracker) : tracker, backendObject, OUTPUT_FORMATS.JSON, true);
+	const updatedTracker = cleanTracker(typeof updatedTrackerInput === "string" ? yamlToJSON(updatedTrackerInput) : updatedTrackerInput, backendObject, OUTPUT_FORMATS.JSON, true);
 
 	const finalTracker = {};
 	let extraFields = {};
