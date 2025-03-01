@@ -135,6 +135,9 @@ export function updateTracker(tracker, updatedTrackerInput, backendObject, inclu
 	tracker = typeof tracker === "string" ? yamlToJSON(tracker) : tracker;
 	const updatedTracker = typeof updatedTrackerInput === "string" ? yamlToJSON(updatedTrackerInput) : updatedTrackerInput;
 
+	tracker = cleanTracker(tracker, backendObject, OUTPUT_FORMATS.JSON, true); // Remove empty fields and clean up structure
+	updatedTracker = cleanTracker(updatedTracker, backendObject, OUTPUT_FORMATS.JSON, true); // Remove empty fields and clean up structure
+
 	const finalTracker = {};
 	let extraFields = {};
 
