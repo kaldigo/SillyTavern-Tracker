@@ -95,6 +95,15 @@ export async function generateTracker(mesNum, includedFields = FIELD_INCLUDE_OPT
 	} catch (e) {
 		error("Failed to generate tracker", e);
 		toastr.error("Failed to generate tracker. Make sure your selected connection profile and completion preset are valid and working");
+		if (extensionSettings.selectedProfile !== "current") {
+			debug("removing connection profile override back to ", preselectedProfile)
+			await ctx.executeSlashCommandsWithOptions(`/profile ${preselectedProfile}`);
+		}
+
+		if (extensionSettings.selectedCompletionPreset !== "current") {
+			debug("removing completion preset override back to ", preselectedPreset)
+			await ctx.executeSlashCommandsWithOptions(`/preset ${preselectedPreset}`);
+		}
 	}
 }
 
