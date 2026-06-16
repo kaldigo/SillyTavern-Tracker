@@ -325,6 +325,9 @@ async function handleStagedGeneration(type, options, dryRun) {
 		if(chat_metadata.tracker.cmdTrackerOverride) {
 			tracker = { ...chat_metadata.tracker.cmdTrackerOverride };
 			chat_metadata.tracker.cmdTrackerOverride = null;
+		} else if (type === ACTION_TYPES.IMPERSONATE && trackerExists(lastMes.tracker, extensionSettings.trackerDef)) {
+			debug("Reusing existing tracker for impersonate:", mesId);
+			tracker = getCleanTracker(lastMes.tracker, extensionSettings.trackerDef, FIELD_INCLUDE_OPTIONS.ALL, true, OUTPUT_FORMATS.JSON);
 		} else if (shouldGenerateTracker(mesId + 1, type)) {
 			debug("Generating new tracker for message:", mesId);
 			tracker = await generateTracker(mesId);
